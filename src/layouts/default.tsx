@@ -1,15 +1,11 @@
 import * as React from 'react';
 import { Container } from '@mui/material';
 import { useAuth } from '../modules/auth/auth.context';
-import { Navbar } from './navbar';
+import { Navbar } from '../components/navbar';
+import { NextComponentType } from 'next';
 
-type LayoutProps = {
-	children: React.ReactNode;
-};
-
-export function Layout({ children }: LayoutProps) {
+export const DefaultLayout: NextComponentType = ({ children }) => {
 	const { loading } = useAuth();
-
 	return (
 		<>
 			{!loading && (
@@ -22,4 +18,4 @@ export function Layout({ children }: LayoutProps) {
 			)}
 		</>
 	);
-}
+};

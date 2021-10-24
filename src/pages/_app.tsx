@@ -8,7 +8,7 @@ import { theme } from '../styles/theme.style';
 import { createEmotionCache } from '../lib/emotion-cache';
 import { AppProps } from 'next/app';
 import { AuthProvider } from '../modules/auth/auth.context';
-import { Layout } from '../components/layout';
+import { DefaultLayout } from '../layouts/default';
 import { SnackbarProvider } from 'notistack';
 
 // Client-side cache, shared for the whole session of the user in the browser.
@@ -36,9 +36,9 @@ export default function MyApp({
 					}}
 				>
 					<AuthProvider>
-						<Layout>
+						<DefaultLayout>
 							<Component {...pageProps} />
-						</Layout>
+						</DefaultLayout>
 					</AuthProvider>
 				</SnackbarProvider>
 			</ThemeProvider>
