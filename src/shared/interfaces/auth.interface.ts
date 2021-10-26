@@ -1,4 +1,11 @@
-export interface IAccount {}
+export interface IAccount {
+	id: string;
+	displayName: string;
+	email: string;
+	emailVerified: boolean;
+	providerId?: string | null;
+	photoUrl?: string | null;
+}
 
 export interface ILoginData {
 	email: string;

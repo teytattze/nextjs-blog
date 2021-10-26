@@ -25,7 +25,7 @@ export function Navbar() {
 	const theme = useTheme();
 	const isDefault = useMediaQuery(theme.breakpoints.up('md'));
 
-	const { user } = useAuth();
+	const { account } = useAuth();
 
 	return (
 		<Box
@@ -38,6 +38,7 @@ export function Navbar() {
 				top: 0,
 				borderBottom: 1,
 				borderColor: 'divider',
+				zIndex: 'appBar',
 			}}
 		>
 			<Container
@@ -51,9 +52,9 @@ export function Navbar() {
 				}}
 			>
 				<Logo />
-				<DefaultLinks isDefault={isDefault} isAuthenticated={Boolean(user)} />
+				<DefaultLinks isDefault={isDefault} />
 			</Container>
-			{!isDefault && user && <BottomLinks />}
+			{!isDefault && account && <BottomLinks />}
 		</Box>
 	);
 }
@@ -82,11 +83,10 @@ export function Logo() {
 
 type DefaultLinksProps = {
 	isDefault: boolean;
-	isAuthenticated: boolean;
 };
 
-export function DefaultLinks({ isDefault, isAuthenticated }: DefaultLinksProps) {
-	const { user, logout } = useAuth();
+export function DefaultLinks({ isDefault }: DefaultLinksProps) {
+	const { account, logout } = useAuth();
 	const router = useRouter();
 	const { enqueueSnackbar } = useSnackbar();
 
@@ -109,7 +109,7 @@ export function DefaultLinks({ isDefault, isAuthenticated }: DefaultLinksProps) 
 
 	return (
 		<>
-			{isAuthenticated ? (
+			{Boolean(account) ? (
 				<Stack direction="row" spacing={3}>
 					{isDefault && (
 						<>
@@ -120,7 +120,7 @@ export function DefaultLinks({ isDefault, isAuthenticated }: DefaultLinksProps) 
 								<DefaultNavLink
 									variant="text"
 									color="inherit"
-									href={`/${user?.id}/posts`}
+									href={`/${account?.id}/posts`}
 									isActive={checkPath('/posts')}
 								>
 									My Post

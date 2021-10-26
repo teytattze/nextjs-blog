@@ -24,7 +24,7 @@ import { handleRegisterError } from '../auth.error';
 export const RegisterForm = () => {
 	const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-	const { registerWithEmailAndPassword } = useAuth();
+	const { registerWithEmailAndPassword, loading } = useAuth();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const {
@@ -38,7 +38,7 @@ export const RegisterForm = () => {
 		try {
 			await registerWithEmailAndPassword(data);
 			enqueueSnackbar('You have signed up successfully!', { variant: 'success' });
-			reset();
+			reset(defaultRegistrationValue);
 		} catch (err) {
 			const message = handleRegisterError(err);
 			setErrorMessage(message);
@@ -47,8 +47,8 @@ export const RegisterForm = () => {
 
 	return (
 		<Paper sx={{ p: 5, mx: 'auto', width: '100%', maxWidth: '500px' }}>
-			<PageTitle title="Sign Up" />
-			<LoadingWrapper loading={false}>
+			<LoadingWrapper loading={loading}>
+				<PageTitle title="Sign Up" />
 				<form onSubmit={handleSubmit((data: IRegisterData) => handleRegister(data))}>
 					<Box sx={{ my: 5 }}>
 						<Stack direction="column" spacing={2.5}>
@@ -123,7 +123,7 @@ export const RegisterForm = () => {
 					<LoadingButton
 						type="submit"
 						variant="contained"
-						// loading={isLoading}
+						loading={loading}
 						fullWidth
 						disableElevation
 					>

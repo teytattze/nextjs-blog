@@ -8,8 +8,8 @@ import { theme } from '../styles/theme.style';
 import { createEmotionCache } from '../lib/emotion-cache';
 import { AppProps } from 'next/app';
 import { AuthProvider } from '../modules/auth/auth.context';
-import { DefaultLayout } from '../layouts/default';
-import { SnackbarProvider } from 'notistack';
+import { DefaultLayout } from '../layouts/default-layout';
+import { SnackbarProvider } from '../components/snackbar-provider';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -26,15 +26,8 @@ export default function MyApp({
 				<meta name="viewport" content="initial-scale=1, width=device-width" />
 			</Head>
 			<ThemeProvider theme={theme}>
-				{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
 				<CssBaseline />
-				<SnackbarProvider
-					maxSnack={3}
-					anchorOrigin={{
-						vertical: 'top',
-						horizontal: 'center',
-					}}
-				>
+				<SnackbarProvider>
 					<AuthProvider>
 						<DefaultLayout>
 							<Component {...pageProps} />

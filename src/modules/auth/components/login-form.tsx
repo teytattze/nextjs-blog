@@ -25,7 +25,7 @@ import { handleLoginError } from '../auth.error';
 export const LoginForm = () => {
 	const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-	const { loginWithEmailAndPassword } = useAuth();
+	const { loginWithEmailAndPassword, loading } = useAuth();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const {
@@ -39,7 +39,7 @@ export const LoginForm = () => {
 		try {
 			await loginWithEmailAndPassword(data);
 			enqueueSnackbar('You have logged in successfully', { variant: 'success' });
-			reset();
+			reset(defaultLoginValue);
 		} catch (err) {
 			const message = handleLoginError(err);
 			setErrorMessage(message);
@@ -55,8 +55,8 @@ export const LoginForm = () => {
 				maxWidth: '500px',
 			}}
 		>
-			<PageTitle title="Sign In" />
-			<LoadingWrapper loading={false}>
+			<LoadingWrapper loading={loading}>
+				<PageTitle title="Sign In" />
 				<form onSubmit={handleSubmit((data: ILoginData) => handleLogin(data))}>
 					<Box sx={{ my: 5 }}>
 						<Stack direction="column" spacing={2.5}>
@@ -121,7 +121,7 @@ export const LoginForm = () => {
 					<LoadingButton
 						type="submit"
 						variant="contained"
-						loading={false}
+						loading={loading}
 						fullWidth
 						disableElevation
 					>
