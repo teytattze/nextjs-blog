@@ -1,11 +1,13 @@
+import { FieldValue } from '@firebase/firestore';
+
 export interface IPost {
 	id: string;
 	authorId: string;
 	title: string;
-	content: string;
+	storageUrl: string;
+	content?: string | null;
 	published: boolean;
 	createdAt: string;
-	updatedAt: string;
 }
 
 export interface IPostWithAuthor extends IPost {

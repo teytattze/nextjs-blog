@@ -9,8 +9,9 @@ import {
 } from '@firebase/auth';
 import { auth } from '../../lib/firebase';
 import { IAccount, ILoginData, IRegisterData } from '../../shared/interfaces/auth.interface';
-import { createUser } from '../../models/users.model';
+import { createUser } from '../users/users.service';
 import { formatFirebaseUser } from './auth.helper';
+import { getCurrentTimestamp } from '../../lib/utils';
 
 type AuthContextValue = {
 	account: IAccount | null;
@@ -53,28 +54,36 @@ export const useProvideAuth = () => {
 	};
 
 	const registerWithEmailAndPassword = async (data: IRegisterData) => {
-		setLoading(true);
-		const { firstName, lastName, email, password } = data;
-		const { user } = await createUserWithEmailAndPassword(auth, email, password);
-
-		if (user) {
-			await updateProfile(user, {
-				displayName: `${firstName} ${lastName}`,
-			});
-			await createUser({
-				id: user.uid,
-				firstName,
-				lastName,
-				email,
-				emailVerified: user.emailVerified,
-			});
+		try {
+			setLoading(true);
+			const { firstName, lastName, email, password } = data;
+			const userCredentials = await createUserWithEmailAndPassword(auth, email, password);
+			if (userCredentials?.user) {
+				await updateProfile(userCredentials?.user, {
+					displayName: `${firstName} ${lastName}`,
+				});
+				await createUser({
+					id: userCredentials?.user.uid,
+					firstName,
+					lastName,
+					email,
+					emailVerified: userCredentials?.user.emailVerified,
+					createdAt: getCurrentTimestamp(),
+				});
+			}
+		} finally {
+			setLoading(false);
 		}
 	};
 
 	const loginWithEmailAndPassword = async (data: ILoginData) => {
-		setLoading(true);
-		const { user } = await signInWithEmailAndPassword(auth, data.email, data.password);
-		handleFirebaseUser(user);
+		try {
+			setLoading(true);
+			const { user } = await signInWithEmailAndPassword(auth, data.email, data.password);
+			handleFirebaseUser(user);
+		} finally {
+			setLoading(false);
+		}
 	};
 
 	const logout = async () => {
