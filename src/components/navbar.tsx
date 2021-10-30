@@ -42,7 +42,7 @@ export function Navbar() {
 			}}
 		>
 			<Container
-				maxWidth="xl"
+				maxWidth="md"
 				sx={{
 					width: '100%',
 					height: '100%',

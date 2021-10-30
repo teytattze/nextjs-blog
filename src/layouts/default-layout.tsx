@@ -8,7 +8,7 @@ export const DefaultLayout: NextComponentType = ({ children }) => {
 	return (
 		<>
 			<Navbar />
-			<Container component="main" maxWidth="xl" sx={{ mt: 15, mb: { xs: 12, md: 5 } }}>
+			<Container component="main" maxWidth="md" sx={{ mt: 15, mb: { xs: 12, md: 5 } }}>
 				{children}
 			</Container>
 		</>
