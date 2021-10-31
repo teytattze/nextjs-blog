@@ -1,14 +1,14 @@
 import { Button, Box, FormControlLabel, Stack, Switch, TextField } from '@mui/material';
 import { NextPage } from 'next';
 import { useForm, Controller } from 'react-hook-form';
-import { LoadingWrapper } from '../components/loading-wrapper';
-import { PageLayout } from '../layouts/page-layout';
-import { useAuth } from '../modules/auth/auth.context';
-import { createPostValidation, defaultCreatePostValue } from '../modules/posts/posts.lib';
-import { createPost } from '../modules/posts/posts.service';
-import { ICreatePostData } from '../shared/interfaces/posts.interface';
+import { LoadingWrapper } from '../../components/loading-wrapper';
+import { PageLayout } from '../../layouts/page-layout';
+import { useAuth } from '../../modules/auth/auth.context';
+import { createPostValidation, defaultCreatePostValue } from '../../modules/posts/posts.lib';
+import { createPost } from '../../services/firebase-posts.service';
+import { ICreatePostData } from '../../shared/interfaces/posts.interface';
 
-const CreatePostPage: NextPage = () => {
+const NewBlogPostPage: NextPage = () => {
 	const { account } = useAuth();
 	const {
 		handleSubmit,
@@ -83,4 +83,4 @@ const CreatePostPage: NextPage = () => {
 	);
 };
 
-export default CreatePostPage;
+export default NewBlogPostPage;

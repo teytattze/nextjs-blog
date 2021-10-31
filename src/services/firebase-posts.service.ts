@@ -1,10 +1,10 @@
 import { collectionGroup, doc, getDocs, setDoc } from '@firebase/firestore';
 import { getDownloadURL, ref, uploadString } from '@firebase/storage';
-import { db, storage } from '../../lib/firebase';
-import { createId, getCurrentTimestamp } from '../../lib/utils';
-import { POSTS_COLLECTION } from '../../shared/constants/posts.const';
-import { USERS_COLLECTION } from '../../shared/constants/users.const';
-import { ICreatePostData, IPost } from '../../shared/interfaces/posts.interface';
+import { db, storage } from '../lib/firebase';
+import { createId, getCurrentTimestamp } from '../lib/utils';
+import { POSTS_COLLECTION } from '../shared/constants/posts.const';
+import { USERS_COLLECTION } from '../shared/constants/users.const';
+import { ICreatePostData, IPost } from '../shared/interfaces/posts.interface';
 
 export const createPost = async (data: ICreatePostData) => {
 	const postId = createId();

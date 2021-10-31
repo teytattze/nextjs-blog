@@ -1,11 +1,12 @@
-import { FieldValue } from '@firebase/firestore';
+import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 
 export interface IPost {
 	id: string;
 	authorId: string;
 	title: string;
 	storageUrl: string;
-	content?: string | null;
+	content?: MDXRemoteSerializeResult<Record<string, unknown>> | null;
+	rawContent?: string | null;
 	published: boolean;
 	createdAt: string;
 }

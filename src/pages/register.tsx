@@ -12,26 +12,32 @@ import { LoadingButton } from '@mui/lab';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import * as React from 'react';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useForm, Controller } from 'react-hook-form';
-import { useAuth } from '../modules/auth/auth.context';
 import { defaultRegistrationValue, registrationValidation } from '../modules/auth/auth.lib';
 import { LoadingWrapper } from '../components/loading-wrapper';
 import { PageTitle } from '../components/page-title';
 import { IRegisterData } from '../shared/interfaces/auth.interface';
-import { handleRegisterError } from '../modules/auth/auth.error';
 import { GoogleButton } from '../components/google-button';
+import { useLoginWithGoogle, useRegisterWithCredentials } from '../modules/auth/auth.query';
+import { handleRegisterError } from '../modules/auth/auth.error';
 
 const RegisterPage = () => {
-	const [errorMessage, setErrorMessage] = React.useState<string>('');
+	const [error, setError] = React.useState<string>('');
 
-	const {
-		registerWithEmailAndPassword,
-		registerOrLoginWithGoogle,
-		sendEmailVerificationLink,
-		loading,
-	} = useAuth();
 	const { enqueueSnackbar } = useSnackbar();
+	const { push } = useRouter();
+
+	const { mutate: registerWithCredentials, isLoading } = useRegisterWithCredentials();
+	const { mutate: loginWithGoogle } = useLoginWithGoogle({
+		onSuccess: () => {
+			enqueueSnackbar('Sign up successfully!', {
+				variant: 'success',
+			});
+			push('/');
+		},
+	});
 
 	const {
 		handleSubmit,
@@ -41,29 +47,31 @@ const RegisterPage = () => {
 	} = useForm<IRegisterData>();
 
 	const handleRegister = async (data: IRegisterData) => {
-		try {
-			await registerWithEmailAndPassword(data);
-			await sendEmailVerificationLink();
-			enqueueSnackbar('An verification email link has been sent to your email address', {
-				variant: 'success',
-			});
-			reset(defaultRegistrationValue);
-		} catch (err) {
-			const message = handleRegisterError(err);
-			setErrorMessage(message);
-		}
+		await registerWithCredentials(data, {
+			onSuccess: () => {
+				enqueueSnackbar('An verification email link has been sent to your email address', {
+					variant: 'success',
+				});
+				reset(defaultRegistrationValue);
+				push('/');
+			},
+			onError: (error) => {
+				const message = handleRegisterError(error);
+				setError(message);
+			},
+		});
 	};
 
 	return (
 		<Paper sx={{ p: 5, mx: 'auto', width: '100%', maxWidth: '500px' }}>
-			<LoadingWrapper loading={loading}>
+			<LoadingWrapper loading={isLoading}>
 				<PageTitle title="Sign Up" />
 				<form onSubmit={handleSubmit((data: IRegisterData) => handleRegister(data))}>
 					<Box sx={{ my: 5 }}>
 						<Stack direction="column" spacing={2.5}>
-							{Boolean(errorMessage) && (
-								<ClickAwayListener onClickAway={() => setErrorMessage('')}>
-									<Alert severity="error">{errorMessage}</Alert>
+							{Boolean(error) && (
+								<ClickAwayListener onClickAway={() => setError('')}>
+									<Alert severity="error">{error}</Alert>
 								</ClickAwayListener>
 							)}
 							<Controller
@@ -132,7 +140,7 @@ const RegisterPage = () => {
 					<LoadingButton
 						type="submit"
 						variant="contained"
-						loading={loading}
+						loading={isLoading}
 						fullWidth
 						disableElevation
 					>
@@ -143,7 +151,7 @@ const RegisterPage = () => {
 						title="Sign Up with Google"
 						fullWidth
 						disableElevation
-						onClick={() => registerOrLoginWithGoogle()}
+						onClick={() => loginWithGoogle()}
 					/>
 				</form>
 				<Divider

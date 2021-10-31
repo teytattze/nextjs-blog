@@ -1,20 +1,26 @@
-import { Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, Skeleton, Stack, Typography } from '@mui/material';
 import type { GetStaticProps, NextPage } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
+import { dehydrate, QueryClient } from 'react-query';
 import { LoadingWrapper } from '../components/loading-wrapper';
-import { indexPosts } from '../modules/posts/posts.service';
+import { useIndexPost } from '../modules/posts/posts.query';
+import { indexPosts } from '../services/firebase-posts.service';
 import { IPost } from '../shared/interfaces/posts.interface';
 
 type HomePageProps = {
-	posts: IPost[];
+	posts?: IPost[];
 };
 
-const HomePage: NextPage<HomePageProps> = ({ posts }) => {
-	const { isFallback } = useRouter();
+const HomePage: NextPage<HomePageProps> = () => {
+	const { data: posts, isLoading } = useIndexPost();
+	const { query } = useRouter();
+
+	console.log(posts);
+
 	return (
 		<LoadingWrapper
-			loading={isFallback}
+			loading={isLoading}
 			type="skeleton"
 			renderSkeleton={() => (
 				<Stack direction="column" spacing={2}>
@@ -26,14 +32,21 @@ const HomePage: NextPage<HomePageProps> = ({ posts }) => {
 		>
 			{posts?.length ? (
 				<Stack direction="column" spacing={4}>
-					{posts.map((post) => (
-						<PostItem key={post.id} postId={post.id} username={post.authorId} title={post.title} />
-					))}
+					{posts
+						.filter((post) => {
+							return query.authorId ? query.authorId === post.authorId : post;
+						})
+						.map((post) => (
+							<PostItem
+								key={post.id}
+								postId={post.id}
+								username={post.authorId}
+								title={post.title}
+							/>
+						))}
 				</Stack>
 			) : (
-				<Typography variant="h6" color="textSecondary">
-					Sorry...published post is not available yet!
-				</Typography>
+				<Alert severity="info">Sorry...Nobody submit a post yet!</Alert>
 			)}
 		</LoadingWrapper>
 	);
@@ -82,11 +95,11 @@ function PostItem({ postId, username, title }: PostItemProps) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-	const posts = await indexPosts();
+	const queryClient = new QueryClient();
+	await queryClient.prefetchQuery(['posts'], () => indexPosts());
 
 	return {
-		props: { posts },
-		revalidate: 1,
+		props: { dehydratedState: dehydrate(queryClient) },
 	};
 };
 

@@ -14,21 +14,32 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import * as React from 'react';
 import { NextPage } from 'next';
 import NextLink from 'next/link';
+import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { useForm, Controller } from 'react-hook-form';
-import { useAuth } from '../modules/auth/auth.context';
 import { ILoginData } from '../shared/interfaces/auth.interface';
 import { defaultLoginValue, loginValidation } from '../modules/auth/auth.lib';
 import { handleLoginError } from '../modules/auth/auth.error';
 import { LoadingWrapper } from '../components/loading-wrapper';
 import { PageTitle } from '../components/page-title';
 import { GoogleButton } from '../components/google-button';
+import { useLoginWithCredentials, useLoginWithGoogle } from '../modules/auth/auth.query';
 
 const LoginPage: NextPage = () => {
 	const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-	const { loginWithEmailAndPassword, registerOrLoginWithGoogle, loading } = useAuth();
 	const { enqueueSnackbar } = useSnackbar();
+	const { push } = useRouter();
+
+	const { mutate: loginWithCredentials, isLoading } = useLoginWithCredentials();
+	const { mutate: loginWithGoogle } = useLoginWithGoogle({
+		onSuccess: () => {
+			enqueueSnackbar('Login successfully!', {
+				variant: 'success',
+			});
+			push('/');
+		},
+	});
 
 	const {
 		handleSubmit,
@@ -38,14 +49,17 @@ const LoginPage: NextPage = () => {
 	} = useForm<ILoginData>();
 
 	const handleLogin = async (data: ILoginData) => {
-		try {
-			await loginWithEmailAndPassword(data);
-			enqueueSnackbar('You have logged in successfully', { variant: 'success' });
-			reset(defaultLoginValue);
-		} catch (err) {
-			const message = handleLoginError(err);
-			setErrorMessage(message);
-		}
+		await loginWithCredentials(data, {
+			onSuccess: () => {
+				enqueueSnackbar('You have logged in successfully', { variant: 'success' });
+				reset(defaultLoginValue);
+				push('/');
+			},
+			onError: (error) => {
+				const message = handleLoginError(error);
+				setErrorMessage(message);
+			},
+		});
 	};
 
 	return (
@@ -57,7 +71,7 @@ const LoginPage: NextPage = () => {
 				maxWidth: '500px',
 			}}
 		>
-			<LoadingWrapper loading={loading}>
+			<LoadingWrapper loading={isLoading}>
 				<PageTitle title="Sign In" />
 				<form onSubmit={handleSubmit((data: ILoginData) => handleLogin(data))}>
 					<Box sx={{ my: 5 }}>
@@ -123,7 +137,7 @@ const LoginPage: NextPage = () => {
 					<LoadingButton
 						type="submit"
 						variant="contained"
-						loading={loading}
+						loading={isLoading}
 						fullWidth
 						disableElevation
 					>
@@ -134,7 +148,7 @@ const LoginPage: NextPage = () => {
 						title="Sign In with Google"
 						fullWidth
 						disableElevation
-						onClick={() => registerOrLoginWithGoogle()}
+						onClick={() => loginWithGoogle()}
 					/>
 				</form>
 				<Divider

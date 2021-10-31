@@ -13,7 +13,6 @@ export const BlogLayout: NextComponentType<{}, {}, BlogLayoutProps> = ({
 	post,
 	author,
 }) => {
-	console.log(author);
 	return (
 		<>
 			<Typography

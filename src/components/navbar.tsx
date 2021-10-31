@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import { UrlObject } from 'url';
 import { useAuth } from '../modules/auth/auth.context';
 import { useSnackbar } from 'notistack';
+import { useLogout } from '../modules/auth/auth.query';
 
 export function Navbar() {
 	const theme = useTheme();
@@ -86,24 +87,20 @@ type DefaultLinksProps = {
 };
 
 export function DefaultLinks({ isDefault }: DefaultLinksProps) {
-	const { account, logout } = useAuth();
+	const { account } = useAuth();
 	const router = useRouter();
 	const { enqueueSnackbar } = useSnackbar();
+	const { mutate: logout } = useLogout({
+		onSuccess: () => {
+			enqueueSnackbar('Logout successfully!', { variant: 'success' });
+		},
+	});
 
 	const checkPath = (pathname: string) => {
 		if (router.pathname === '/' && pathname === '/') return true;
 		if (pathname !== '/') {
 			const isActive = router.pathname === pathname || router.pathname.indexOf(pathname) === 0;
 			return isActive;
-		}
-	};
-
-	const handleLogout = async () => {
-		try {
-			await logout();
-			enqueueSnackbar('You have logged out successfully!', { variant: 'success' });
-		} catch (err) {
-			console.log(err);
 		}
 	};
 
@@ -128,8 +125,8 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 								<DefaultNavLink
 									variant="text"
 									color="inherit"
-									href="/create-post"
-									isActive={checkPath('/create-post')}
+									href="/blog/new"
+									isActive={checkPath('/blog')}
 								>
 									New Post
 								</DefaultNavLink>
@@ -137,7 +134,7 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 							<Divider orientation="vertical" flexItem />
 						</>
 					)}
-					<Button onClick={handleLogout} variant="outlined" size={isDefault ? 'medium' : 'small'}>
+					<Button onClick={() => logout()} variant="outlined" size={isDefault ? 'medium' : 'small'}>
 						Logout
 					</Button>
 				</Stack>
