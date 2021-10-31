@@ -60,11 +60,12 @@ function PostItem({ postId, username, title }: PostItemProps) {
 					transition: 'all 0.4s ease-in-out',
 					':hover': {
 						backgroundColor: 'background.paper',
-						boxShadow: 5,
+						borderColor: 'transparent',
+						boxShadow: 6,
 					},
 				}}
 			>
-				<Typography variant="h6">{title}</Typography>
+				<Typography variant="h5">{title}</Typography>
 				<Typography
 					variant="caption"
 					sx={{

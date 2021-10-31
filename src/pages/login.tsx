@@ -22,11 +22,12 @@ import { defaultLoginValue, loginValidation } from '../modules/auth/auth.lib';
 import { handleLoginError } from '../modules/auth/auth.error';
 import { LoadingWrapper } from '../components/loading-wrapper';
 import { PageTitle } from '../components/page-title';
+import { GoogleButton } from '../components/google-button';
 
 const LoginPage: NextPage = () => {
 	const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-	const { loginWithEmailAndPassword, loading } = useAuth();
+	const { loginWithEmailAndPassword, registerOrLoginWithGoogle, loading } = useAuth();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const {
@@ -128,6 +129,13 @@ const LoginPage: NextPage = () => {
 					>
 						Sign In
 					</LoadingButton>
+					<Box sx={{ my: 1 }} />
+					<GoogleButton
+						title="Sign In with Google"
+						fullWidth
+						disableElevation
+						onClick={() => registerOrLoginWithGoogle()}
+					/>
 				</form>
 				<Divider
 					sx={{

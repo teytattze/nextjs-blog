@@ -1,24 +1,32 @@
 import * as React from 'react';
 import {
 	signInWithEmailAndPassword,
+	signInWithPopup,
 	signOut,
 	onAuthStateChanged,
 	User,
 	createUserWithEmailAndPassword,
 	updateProfile,
+	GoogleAuthProvider,
+	sendEmailVerification,
 } from '@firebase/auth';
 import { auth } from '../../lib/firebase';
 import { IAccount, ILoginData, IRegisterData } from '../../shared/interfaces/auth.interface';
 import { createUser } from '../users/users.service';
 import { formatFirebaseUser } from './auth.helper';
 import { getCurrentTimestamp } from '../../lib/utils';
+import { async } from '@firebase/util';
+
+const googleProvider = new GoogleAuthProvider();
 
 type AuthContextValue = {
 	account: IAccount | null;
 	loading: boolean;
 	registerWithEmailAndPassword: (data: IRegisterData) => Promise<void>;
 	loginWithEmailAndPassword: (data: ILoginData) => Promise<void>;
+	registerOrLoginWithGoogle: () => Promise<void>;
 	logout: () => Promise<void>;
+	sendEmailVerificationLink: () => Promise<void>;
 };
 
 const AuthContext = React.createContext<AuthContextValue>({
@@ -26,7 +34,9 @@ const AuthContext = React.createContext<AuthContextValue>({
 	loading: false,
 	registerWithEmailAndPassword: async () => undefined,
 	loginWithEmailAndPassword: async () => undefined,
+	registerOrLoginWithGoogle: async () => undefined,
 	logout: async () => undefined,
+	sendEmailVerificationLink: async () => undefined,
 });
 
 type AuthProviderProps = {
@@ -86,8 +96,24 @@ export const useProvideAuth = () => {
 		}
 	};
 
+	const registerOrLoginWithGoogle = async () => {
+		try {
+			const { user } = await signInWithPopup(auth, googleProvider);
+			console.log(user.providerData);
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
 	const logout = async () => {
 		await signOut(auth);
+	};
+
+	const sendEmailVerificationLink = async () => {
+		if (auth.currentUser) {
+			const result = await sendEmailVerification(auth.currentUser);
+			console.log(result);
+		}
 	};
 
 	React.useEffect(() => {
@@ -100,7 +126,9 @@ export const useProvideAuth = () => {
 		loading,
 		registerWithEmailAndPassword,
 		loginWithEmailAndPassword,
+		registerOrLoginWithGoogle,
 		logout,
+		sendEmailVerificationLink,
 	};
 };
 

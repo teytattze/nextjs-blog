@@ -144,6 +144,7 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 			) : (
 				<Stack direction="row" spacing={1.5}>
 					<Button
+						data-testid="nav-link-login"
 						variant="contained"
 						size={isDefault ? 'medium' : 'small'}
 						href="/login"

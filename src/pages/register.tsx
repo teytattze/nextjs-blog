@@ -20,11 +20,17 @@ import { LoadingWrapper } from '../components/loading-wrapper';
 import { PageTitle } from '../components/page-title';
 import { IRegisterData } from '../shared/interfaces/auth.interface';
 import { handleRegisterError } from '../modules/auth/auth.error';
+import { GoogleButton } from '../components/google-button';
 
 const RegisterPage = () => {
 	const [errorMessage, setErrorMessage] = React.useState<string>('');
 
-	const { registerWithEmailAndPassword, loading } = useAuth();
+	const {
+		registerWithEmailAndPassword,
+		registerOrLoginWithGoogle,
+		sendEmailVerificationLink,
+		loading,
+	} = useAuth();
 	const { enqueueSnackbar } = useSnackbar();
 
 	const {
@@ -37,7 +43,10 @@ const RegisterPage = () => {
 	const handleRegister = async (data: IRegisterData) => {
 		try {
 			await registerWithEmailAndPassword(data);
-			enqueueSnackbar('You have signed up successfully!', { variant: 'success' });
+			await sendEmailVerificationLink();
+			enqueueSnackbar('An verification email link has been sent to your email address', {
+				variant: 'success',
+			});
 			reset(defaultRegistrationValue);
 		} catch (err) {
 			const message = handleRegisterError(err);
@@ -129,6 +138,13 @@ const RegisterPage = () => {
 					>
 						Sign Up
 					</LoadingButton>
+					<Box sx={{ my: 1 }} />
+					<GoogleButton
+						title="Sign Up with Google"
+						fullWidth
+						disableElevation
+						onClick={() => registerOrLoginWithGoogle()}
+					/>
 				</form>
 				<Divider
 					sx={{
