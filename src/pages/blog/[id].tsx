@@ -1,31 +1,9 @@
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { serialize } from 'next-mdx-remote/serialize';
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { indexPosts, getPost, getPostContent } from '../../services/firebase-posts.service';
-import { IPost } from '../../shared/interfaces/posts.interface';
-import { BlogLayout } from '../../layouts/blog-layout';
+import { getPost, getPostContent, indexPosts } from '../../services/firebase-posts.service';
 import { getUser } from '../../services/firebase-users.service';
-import { IUser } from '../../shared/interfaces/users.interface';
 
-type BlogPageProps = {
-	post: IPost;
-	author: IUser;
-};
-
-const BlogPage: NextPage<BlogPageProps> = ({ post, author }) => {
-	const router = useRouter();
-
-	return (
-		<>
-			{!router.isFallback && (
-				<BlogLayout post={post} author={author}>
-					<MDXRemote {...post.content!} />
-				</BlogLayout>
-			)}
-		</>
-	);
-};
+export { default } from '../../modules/posts/components/post-article';
 
 export const getStaticPaths: GetStaticPaths = async () => {
 	const posts = await indexPosts();
@@ -48,5 +26,3 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
 
 	return { props: { post: updatePost, author } };
 };
-
-export default BlogPage;

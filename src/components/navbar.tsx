@@ -64,6 +64,7 @@ export function Logo() {
 	return (
 		<NextLink href="/" passHref>
 			<Link
+				data-testid="nav-link-logo"
 				variant="h6"
 				sx={{
 					cursor: 'pointer',
@@ -99,7 +100,8 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 	const checkPath = (pathname: string) => {
 		if (router.pathname === '/' && pathname === '/') return true;
 		if (pathname !== '/') {
-			const isActive = router.pathname === pathname || router.pathname.indexOf(pathname) === 0;
+			const isActive =
+				router.pathname === pathname || router.pathname.indexOf(pathname) === 0;
 			return isActive;
 		}
 	};
@@ -111,7 +113,12 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 					{isDefault && (
 						<>
 							<Stack direction="row" spacing={1.5}>
-								<DefaultNavLink variant="text" color="inherit" href="/" isActive={checkPath('/')}>
+								<DefaultNavLink
+									variant="text"
+									color="inherit"
+									href="/"
+									isActive={checkPath('/')}
+								>
 									Home
 								</DefaultNavLink>
 								<DefaultNavLink
@@ -134,7 +141,11 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 							<Divider orientation="vertical" flexItem />
 						</>
 					)}
-					<Button onClick={() => logout()} variant="outlined" size={isDefault ? 'medium' : 'small'}>
+					<Button
+						onClick={() => logout()}
+						variant="outlined"
+						size={isDefault ? 'medium' : 'small'}
+					>
 						Logout
 					</Button>
 				</Stack>
@@ -149,7 +160,12 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 					>
 						Login
 					</Button>
-					<Button variant="outlined" size={isDefault ? 'medium' : 'small'} href="/register">
+					<Button
+						data-testid="nav-link-register"
+						variant="outlined"
+						size={isDefault ? 'medium' : 'small'}
+						href="/register"
+					>
 						Sign Up
 					</Button>
 				</Stack>
@@ -175,8 +191,16 @@ export function BottomLinks() {
 			showLabels
 		>
 			<BottomNavigationAction label="Home" value="/" icon={<HomeIcon />} />
-			<BottomNavigationAction label="Post" value="/posts" icon={<ArticleIcon />} />
-			<BottomNavigationAction label="Account" value="/account" icon={<PersonIcon />} />
+			<BottomNavigationAction
+				label="Post"
+				value="/posts"
+				icon={<ArticleIcon />}
+			/>
+			<BottomNavigationAction
+				label="Account"
+				value="/account"
+				icon={<PersonIcon />}
+			/>
 		</BottomNavigation>
 	);
 }

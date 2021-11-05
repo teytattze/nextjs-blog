@@ -15,7 +15,5 @@ export const middleware = (req: NextRequest) => {
 
 	if (changed) {
 		return NextResponse.redirect(url);
-		// It's also useful to do a rewrite instead of a redirect
-		// return NextResponse.rewrite(url)
 	}
 };

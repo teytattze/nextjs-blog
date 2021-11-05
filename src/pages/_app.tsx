@@ -6,7 +6,7 @@ import { CacheProvider } from '@emotion/react';
 import { EmotionCache } from '@emotion/utils';
 import { theme } from '../styles/theme.style';
 import { createEmotionCache } from '../lib/emotion-cache';
-import { AppProps, NextWebVitalsMetric } from 'next/app';
+import { AppProps } from 'next/app';
 import { AuthProvider } from '../modules/auth/auth.context';
 import { DefaultLayout } from '../layouts/default-layout';
 import { SnackbarProvider } from '../components/snackbar-provider';
@@ -46,8 +46,4 @@ export default function MyApp({
 			</ThemeProvider>
 		</CacheProvider>
 	);
-}
-
-export function reportWebVitals(metric: NextWebVitalsMetric) {
-	console.log(metric);
 }
