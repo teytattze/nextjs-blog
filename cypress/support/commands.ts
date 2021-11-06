@@ -25,6 +25,9 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('getByTestId', (selector, ...args): Cypress.Chainable<JQuery<HTMLElement>> => {
-  return cy.get(`[data-testid=${selector}]`, ...args)
-})
+Cypress.Commands.add(
+  'getByTestId',
+  (selector, ...args): Cypress.Chainable<JQuery<HTMLElement>> => {
+    return cy.get(`[data-testid=${selector}]`, ...args);
+  },
+);

@@ -5,10 +5,12 @@ import { indexPosts } from '../services/firebase-posts.service';
 export { default } from '../modules/posts/components/posts-listing';
 
 export const getStaticProps: GetStaticProps = async () => {
-	const queryClient = new QueryClient();
-	await queryClient.prefetchQuery(['posts'], () => indexPosts());
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery(['posts'], () =>
+    indexPosts({ published: true }),
+  );
 
-	return {
-		props: { dehydratedState: dehydrate(queryClient) },
-	};
+  return {
+    props: { dehydratedState: dehydrate(queryClient) },
+  };
 };

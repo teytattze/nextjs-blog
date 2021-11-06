@@ -17,33 +17,33 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp({
-	Component,
-	emotionCache = clientSideEmotionCache,
-	pageProps,
+  Component,
+  emotionCache = clientSideEmotionCache,
+  pageProps,
 }: AppProps & { emotionCache: EmotionCache }) {
-	const [queryClient] = React.useState(() => new QueryClient());
+  const [queryClient] = React.useState(() => new QueryClient());
 
-	return (
-		<CacheProvider value={emotionCache}>
-			<Head>
-				<title>My Blog</title>
-				<meta name="viewport" content="initial-scale=1, width=device-width" />
-			</Head>
-			<ThemeProvider theme={theme}>
-				<CssBaseline />
-				<QueryClientProvider client={queryClient}>
-					<Hydrate state={pageProps.dehydratedState}>
-						<SnackbarProvider>
-							<AuthProvider>
-								<DefaultLayout>
-									<Component {...pageProps} />
-								</DefaultLayout>
-							</AuthProvider>
-						</SnackbarProvider>
-						<ReactQueryDevtools initialIsOpen={false} />
-					</Hydrate>
-				</QueryClientProvider>
-			</ThemeProvider>
-		</CacheProvider>
-	);
+  return (
+    <CacheProvider value={emotionCache}>
+      <Head>
+        <title>My Blog</title>
+        <meta name='viewport' content='initial-scale=1, width=device-width' />
+      </Head>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <QueryClientProvider client={queryClient}>
+          <Hydrate state={pageProps.dehydratedState}>
+            <SnackbarProvider>
+              <AuthProvider>
+                <DefaultLayout>
+                  <Component {...pageProps} />
+                </DefaultLayout>
+              </AuthProvider>
+            </SnackbarProvider>
+            <ReactQueryDevtools initialIsOpen={false} />
+          </Hydrate>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </CacheProvider>
+  );
 }

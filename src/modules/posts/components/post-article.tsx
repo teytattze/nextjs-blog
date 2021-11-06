@@ -6,22 +6,22 @@ import { BlogLayout } from '../../../layouts/blog-layout';
 import { IUser } from '../../../shared/interfaces/users.interface';
 
 type PostArticleProps = {
-	post: IPost;
-	author: IUser;
+  post: IPost;
+  author: IUser;
 };
 
 const PostArticle: NextPage<PostArticleProps> = ({ post, author }) => {
-	const router = useRouter();
+  const router = useRouter();
 
-	return (
-		<>
-			{!router.isFallback && (
-				<BlogLayout post={post} author={author}>
-					<MDXRemote {...post.content!} />
-				</BlogLayout>
-			)}
-		</>
-	);
+  return (
+    <>
+      {!router.isFallback && (
+        <BlogLayout post={post} author={author}>
+          <MDXRemote {...post.content!} />
+        </BlogLayout>
+      )}
+    </>
+  );
 };
 
 export default PostArticle;
