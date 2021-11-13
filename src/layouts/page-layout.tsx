@@ -4,14 +4,17 @@ import React from 'react';
 import { PageTitle } from '../components/page-title';
 
 type PageLayoutProps = {
-	title: string;
+  title: string;
 };
 
-export const PageLayout: NextComponentType<{}, {}, PageLayoutProps> = ({ children, title }) => {
-	return (
-		<>
-			<PageTitle title={title} />
-			<Box sx={{ mt: 4 }}>{children}</Box>
-		</>
-	);
+export const PageLayout: NextComponentType<{}, {}, PageLayoutProps> = ({
+  children,
+  title,
+}) => {
+  return (
+    <>
+      <PageTitle title={title} />
+      <Box sx={{ mt: 4 }}>{children}</Box>
+    </>
+  );
 };
