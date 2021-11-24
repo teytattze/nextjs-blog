@@ -124,10 +124,10 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
                 <DefaultNavLink
                   variant='text'
                   color='inherit'
-                  href={`/${account?.id}/posts`}
+                  href={`/users/${account?.id}/posts`}
                   isActive={checkPath('/posts')}
                 >
-                  My Post
+                  My Posts
                 </DefaultNavLink>
                 <DefaultNavLink
                   variant='text'
@@ -135,7 +135,7 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
                   href='/blog/new'
                   isActive={checkPath('/blog')}
                 >
-                  New Post
+                  New
                 </DefaultNavLink>
               </Stack>
               <Divider orientation='vertical' flexItem />
@@ -176,6 +176,7 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
 
 export function BottomLinks() {
   const router = useRouter();
+  const { account } = useAuth();
   const [value, setValue] = React.useState(router.pathname);
 
   const handleChange = (ev: React.SyntheticEvent, newValue: string) => {
@@ -192,13 +193,13 @@ export function BottomLinks() {
     >
       <BottomNavigationAction label='Home' value='/' icon={<HomeIcon />} />
       <BottomNavigationAction
-        label='Post'
-        value='/posts'
+        label='My Posts'
+        value={`/users/${account?.id}/posts`}
         icon={<ArticleIcon />}
       />
       <BottomNavigationAction
-        label='Account'
-        value='/account'
+        label='New'
+        value='/blog/new'
         icon={<PersonIcon />}
       />
     </BottomNavigation>

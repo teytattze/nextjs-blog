@@ -3,14 +3,14 @@ import { serialize } from 'next-mdx-remote/serialize';
 import {
   getPost,
   getPostContent,
-  indexPublishedPosts,
+  indexPosts,
 } from '../../services/firebase-posts.service';
 import { getUser } from '../../services/firebase-users.service';
 
 export { default } from '../../modules/posts/components/post-article';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await indexPublishedPosts();
+  const posts = await indexPosts({ published: true });
   const params = posts.map((post) => ({ params: { id: post.id } }));
   return {
     paths: params,
