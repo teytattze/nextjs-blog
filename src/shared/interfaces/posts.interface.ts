@@ -1,8 +1,12 @@
 import { MDXRemoteSerializeResult } from 'next-mdx-remote';
 
-export interface IPost {
-  id: string;
+export interface IAuthor {
   authorId: string;
+  authorName: string;
+}
+
+export interface IPost extends IAuthor {
+  id: string;
   title: string;
   storageUrl: string;
   content?: MDXRemoteSerializeResult<Record<string, unknown>> | null;
@@ -11,13 +15,13 @@ export interface IPost {
   createdAt: string;
 }
 
-export interface ICreatePostData {
+export interface ICreatePostData extends IAuthor {
   title: string;
   content: string;
   published: boolean;
-  authorId: string;
 }
 
 export interface IPostsFilters {
   published?: boolean;
+  authorId?: string;
 }

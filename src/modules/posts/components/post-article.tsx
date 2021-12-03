@@ -1,27 +1,22 @@
 import { MDXRemote } from 'next-mdx-remote';
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { IPost } from '../../../shared/interfaces/posts.interface';
 import { BlogLayout } from '../../../layouts/blog-layout';
-import { IUser } from '../../../shared/interfaces/users.interface';
+import { Alert } from '@mui/material';
+import { IPost } from '../../../shared/interfaces/posts.interface';
 
 type PostArticleProps = {
-  post: IPost;
-  author: IUser;
+  post?: IPost;
 };
 
-const PostArticle: NextPage<PostArticleProps> = ({ post, author }) => {
-  const router = useRouter();
-
+export function PostArticle({ post }: PostArticleProps) {
   return (
     <>
-      {!router.isFallback && (
-        <BlogLayout post={post} author={author}>
+      {post ? (
+        <BlogLayout post={post}>
           <MDXRemote {...post.content!} />
         </BlogLayout>
+      ) : (
+        <Alert severity='warning'>Error...there is no available post!</Alert>
       )}
     </>
   );
-};
-
-export default PostArticle;
+}

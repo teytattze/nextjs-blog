@@ -100,9 +100,9 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
   const checkPath = (pathname: string) => {
     if (router.pathname === '/' && pathname === '/') return true;
     if (pathname !== '/') {
-      const isActive =
-        router.pathname === pathname || router.pathname.indexOf(pathname) === 0;
-      return isActive;
+      return (
+        router.pathname === pathname || router.pathname.indexOf(pathname) === 0
+      );
     }
   };
 
@@ -125,7 +125,7 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
                   variant='text'
                   color='inherit'
                   href={`/users/${account?.id}/posts`}
-                  isActive={checkPath('/posts')}
+                  isActive={checkPath('/users')}
                 >
                   My Posts
                 </DefaultNavLink>

@@ -12,7 +12,6 @@ import {
 import { LoadingButton } from '@mui/lab';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import * as React from 'react';
-import { NextPage } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
@@ -25,7 +24,7 @@ import { defaultLoginValue, loginValidation } from '../auth.lib';
 import { handleLoginError } from '../auth.error';
 import { useLoginWithCredentials, useLoginWithGoogle } from '../auth.query';
 
-const LoginForm: NextPage = () => {
+export function LoginForm() {
   const [errorMessage, setErrorMessage] = React.useState<string>('');
 
   const { enqueueSnackbar } = useSnackbar();
@@ -176,6 +175,4 @@ const LoginForm: NextPage = () => {
       </LoadingWrapper>
     </Paper>
   );
-};
-
-export default LoginForm;
+}

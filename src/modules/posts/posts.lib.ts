@@ -6,6 +6,7 @@ export const defaultCreatePostValue: ICreatePostData = {
   content: '',
   published: false,
   authorId: '',
+  authorName: '',
 };
 
 export const createPostValidation: Record<

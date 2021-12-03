@@ -1,1 +1,5 @@
-export { default } from '../../modules/posts/components/new-post';
+import { NewPost } from '../../modules/posts/components/new-post';
+
+export default function NewPostPage() {
+  return <NewPost />;
+}

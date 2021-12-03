@@ -11,19 +11,16 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import { NextComponentType } from 'next';
 import { IPost } from '../shared/interfaces/posts.interface';
-import { IUser } from '../shared/interfaces/users.interface';
 import { theme } from '../styles/theme.style';
 import { useAuth } from '../modules/auth/auth.context';
 
 type BlogLayoutProps = {
   post: IPost;
-  author: IUser;
 };
 
 export const BlogLayout: NextComponentType<{}, {}, BlogLayoutProps> = ({
   children,
   post,
-  author,
 }) => {
   const { account } = useAuth();
   const isMediumScreen = useMediaQuery(theme.breakpoints.up('sm'));
@@ -78,7 +75,7 @@ export const BlogLayout: NextComponentType<{}, {}, BlogLayoutProps> = ({
             fontWeight: 600,
           }}
         >
-          By: {author.firstName}
+          By: {post.authorName}
         </Typography>
         <Typography
           variant='caption'

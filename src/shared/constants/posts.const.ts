@@ -1,1 +1,2 @@
-export const POSTS_COLLECTION = 'posts';
+export const INDEX_POSTS_QUERY_KEY = 'INDEX_POSTS';
+export const GET_POST_QUERY_KEY = 'GET_POST';

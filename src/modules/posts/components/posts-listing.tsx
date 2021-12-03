@@ -1,14 +1,17 @@
 import { Alert, Skeleton, Stack, Typography } from '@mui/material';
-import { NextPage } from 'next';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { LoadingWrapper } from '../../../components/loading-wrapper';
-import { useIndexPost } from '../../../modules/posts/posts.query';
+import { IPost } from '../../../shared/interfaces/posts.interface';
 
-const PostsListing: NextPage = () => {
-  const { data: posts, isLoading } = useIndexPost({ published: true });
+type PostsListingProps = {
+  posts?: IPost[];
+  isLoading: boolean;
+  isError: boolean;
+};
+
+export function PostsListing({ posts, isLoading }: PostsListingProps) {
   const { query } = useRouter();
-
   return (
     <LoadingWrapper
       loading={isLoading}
@@ -30,8 +33,9 @@ const PostsListing: NextPage = () => {
             .map((post) => (
               <PostItem
                 key={post.id}
+                authorId={post.authorId}
                 postId={post.id}
-                username={post.authorId}
+                username={post.authorName}
                 title={post.title}
               />
             ))}
@@ -41,17 +45,18 @@ const PostsListing: NextPage = () => {
       )}
     </LoadingWrapper>
   );
-};
+}
 
 type PostItemProps = {
+  authorId: string;
   postId: string;
   username: string;
   title: string;
 };
 
-const PostItem = ({ postId, username, title }: PostItemProps) => {
+const PostItem = ({ authorId, postId, username, title }: PostItemProps) => {
   return (
-    <NextLink href={`blog/${postId}`}>
+    <NextLink href={`/blog/post?authorId=${authorId}&postId=${postId}`}>
       <Stack
         direction='column'
         spacing={2}
@@ -84,5 +89,3 @@ const PostItem = ({ postId, username, title }: PostItemProps) => {
     </NextLink>
   );
 };
-
-export default PostsListing;

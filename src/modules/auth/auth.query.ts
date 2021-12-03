@@ -7,12 +7,12 @@ import {
   logout,
   registerWithCredentials,
   sendEmailVerificationLink,
-} from '../../services/firebase-auth.service';
+} from '../../services/firestore-auth.service';
 import {
   ILoginData,
   IRegisterData,
 } from '../../shared/interfaces/auth.interface';
-import { createUser } from '../../services/firebase-users.service';
+import { createUser } from '../../services/firestore-users.service';
 
 export const useRegisterWithCredentials = (
   options?: UseMutationOptions<UserCredential, unknown, IRegisterData, unknown>,

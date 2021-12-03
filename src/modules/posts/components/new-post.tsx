@@ -6,16 +6,15 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
-import { NextPage } from 'next';
 import { Controller, useForm } from 'react-hook-form';
 import { LoadingWrapper } from '../../../components/loading-wrapper';
 import { PageLayout } from '../../../layouts/page-layout';
 import { useAuth } from '../../../modules/auth/auth.context';
 import { createPostValidation, defaultCreatePostValue } from '../posts.lib';
-import { createPost } from '../../../services/firebase-posts.service';
+import { createPost } from '../../../services/firestore-posts.service';
 import { ICreatePostData } from '../../../shared/interfaces/posts.interface';
 
-const NewPost: NextPage = () => {
+export function NewPost() {
   const { account } = useAuth();
   const {
     handleSubmit,
@@ -32,7 +31,11 @@ const NewPost: NextPage = () => {
             if (!account) {
               return;
             }
-            await createPost({ ...data, authorId: account.id });
+            await createPost({
+              ...data,
+              authorId: account.id,
+              authorName: account.displayName,
+            });
             reset(defaultCreatePostValue);
           })}
         >
@@ -91,6 +94,4 @@ const NewPost: NextPage = () => {
       </LoadingWrapper>
     </PageLayout>
   );
-};
-
-export default NewPost;
+}

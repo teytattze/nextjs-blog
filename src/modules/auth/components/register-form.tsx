@@ -23,7 +23,7 @@ import { defaultRegistrationValue, registrationValidation } from '../auth.lib';
 import { useLoginWithGoogle, useRegisterWithCredentials } from '../auth.query';
 import { handleRegisterError } from '../auth.error';
 
-const RegisterForm = () => {
+export function RegisterForm() {
   const [error, setError] = React.useState<string>('');
 
   const { enqueueSnackbar } = useSnackbar();
@@ -183,6 +183,6 @@ const RegisterForm = () => {
       </LoadingWrapper>
     </Paper>
   );
-};
+}
 
 export default RegisterForm;
