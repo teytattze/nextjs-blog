@@ -21,7 +21,6 @@ import { UrlObject } from 'url';
 import { useAuth } from '../modules/auth/auth.context';
 import { useSnackbar } from 'notistack';
 import { useLogout } from '../modules/auth/auth.query';
-
 export function Navbar() {
   const theme = useTheme();
   const isDefault = useMediaQuery(theme.breakpoints.up('md'));

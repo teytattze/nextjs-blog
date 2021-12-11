@@ -117,22 +117,20 @@ export function LoginForm() {
               />
             </Stack>
             <Box sx={{ textAlign: 'right' }}>
-              <NextLink href='/forgot-password' passHref>
-                <Link
-                  variant='caption'
-                  sx={{
-                    color: 'text.secondary',
-                    p: 0.5,
-                    cursor: 'pointer',
-                    ':hover': {
-                      color: 'text.primary',
-                    },
-                    textDecoration: 'none',
-                  }}
-                >
-                  Forgot Password?
-                </Link>
-              </NextLink>
+              <Link
+                variant='caption'
+                sx={{
+                  color: 'text.secondary',
+                  p: 0.5,
+                  cursor: 'pointer',
+                  ':hover': {
+                    color: 'text.primary',
+                  },
+                  textDecoration: 'none',
+                }}
+              >
+                Forgot Password?
+              </Link>
             </Box>
           </Box>
           <LoadingButton
@@ -162,7 +160,7 @@ export function LoginForm() {
         >
           NO ACCOUNT?
         </Divider>
-        <NextLink href='/login' passHref>
+        <NextLink href='/register' passHref>
           <Button
             variant='text'
             endIcon={<ArrowForwardIcon />}
