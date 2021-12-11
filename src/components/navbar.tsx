@@ -12,9 +12,9 @@ import {
   useMediaQuery,
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import AddIcon from '@mui/icons-material/Add';
 import ArticleIcon from '@mui/icons-material/Article';
 import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { UrlObject } from 'url';
@@ -89,22 +89,12 @@ type DefaultLinksProps = {
 
 export function DefaultLinks({ isDefault }: DefaultLinksProps) {
   const { account } = useAuth();
-  const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const { mutate: logout } = useLogout({
     onSuccess: () => {
       enqueueSnackbar('Logout successfully!', { variant: 'success' });
     },
   });
-
-  const checkPath = (pathname: string) => {
-    if (router.pathname === '/' && pathname === '/') return true;
-    if (pathname !== '/') {
-      return (
-        router.pathname === pathname || router.pathname.indexOf(pathname) === 0
-      );
-    }
-  };
 
   return (
     <>
@@ -113,28 +103,17 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
           {isDefault && (
             <>
               <Stack direction='row' spacing={1.5}>
-                <DefaultNavLink
-                  variant='text'
-                  color='inherit'
-                  href='/'
-                  isActive={checkPath('/')}
-                >
+                <DefaultNavLink variant='text' color='inherit' href='/'>
                   Home
                 </DefaultNavLink>
                 <DefaultNavLink
                   variant='text'
                   color='inherit'
                   href={`/users/${account?.id}/posts`}
-                  isActive={checkPath('/users')}
                 >
                   My Posts
                 </DefaultNavLink>
-                <DefaultNavLink
-                  variant='text'
-                  color='inherit'
-                  href='/blog/new'
-                  isActive={checkPath('/blog')}
-                >
+                <DefaultNavLink variant='text' color='inherit' href='/blog/new'>
                   New
                 </DefaultNavLink>
               </Stack>
@@ -200,7 +179,7 @@ export function BottomLinks() {
       <BottomNavigationAction
         label='New'
         value='/blog/new'
-        icon={<PersonIcon />}
+        icon={<AddIcon />}
       />
     </BottomNavigation>
   );

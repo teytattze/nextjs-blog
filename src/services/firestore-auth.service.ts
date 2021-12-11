@@ -3,7 +3,7 @@ import {
   GoogleAuthProvider,
   sendEmailVerification,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
   signOut,
   User,
   UserCredential,
@@ -27,7 +27,7 @@ export const loginWithCredentials = async (
 };
 
 export const loginWithGoogle = async (): Promise<UserCredential> => {
-  return await signInWithPopup(auth, googleProvider);
+  return await signInWithRedirect(auth, googleProvider);
 };
 
 export const logout = async () => {

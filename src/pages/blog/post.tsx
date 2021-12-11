@@ -4,13 +4,25 @@ import { getPost } from '../../services/firestore-posts.service';
 import { getPostContent } from '../../services/storage-posts.service';
 import { serialize } from 'next-mdx-remote/serialize';
 import { IPost } from '../../shared/interfaces/posts.interface';
+import { useRouter } from 'next/router';
+import PostEdit from '../../modules/posts/components/post-edit';
 
 type PostArticlePageProps = {
   post?: IPost;
 };
 
 export default function PostArticlePage({ post }: PostArticlePageProps) {
-  return <PostArticle post={post} />;
+  const { query } = useRouter();
+
+  return (
+    <>
+      {query.edit === 'true' ? (
+        <PostEdit post={post} />
+      ) : (
+        <PostArticle post={post} />
+      )}
+    </>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
@@ -21,9 +33,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const post = await getPost(query.authorId as string, query.postId as string);
   const content = await getPostContent(post.storageUrl);
-  const article = await serialize(content);
+  const mdxContent = await serialize(content);
 
-  const updatePost = { ...post, content: article, rawContent: content };
+  const updatePost = { ...post, content, mdxContent };
 
   return { props: { post: updatePost } };
 };

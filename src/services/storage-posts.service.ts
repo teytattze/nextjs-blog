@@ -1,5 +1,10 @@
 import { storage } from '../lib/firebase';
-import { getDownloadURL, ref, uploadString } from '@firebase/storage';
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadString,
+} from '@firebase/storage';
 import { ICreatePostData } from '../shared/interfaces/posts.interface';
 
 export const createPostContent = async ({
@@ -19,4 +24,9 @@ export const getPostContent = async (storageUrl: string): Promise<string> => {
   return await fetch(downloadUrl)
     .then((res) => res.blob())
     .then((res) => res.text());
+};
+
+export const deletePostContent = async (id: string, authorId: string) => {
+  const postRef = ref(storage, `${authorId}/posts/${id}`);
+  await deleteObject(postRef);
 };

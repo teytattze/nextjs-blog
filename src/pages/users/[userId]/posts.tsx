@@ -1,12 +1,12 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { dehydrate, QueryClient } from 'react-query';
-import { indexPosts } from '../../../../services/firestore-posts.service';
-import { INDEX_POSTS_QUERY_KEY } from '../../../../shared/constants/posts.const';
-import { IPostsFilters } from '../../../../shared/interfaces/posts.interface';
-import { indexUsers } from '../../../../services/firestore-users.service';
-import { PostsListing } from '../../../../modules/posts/components/posts-listing';
-import { useIndexPost } from '../../../../modules/posts/posts.query';
-import { useAuth } from '../../../../modules/auth/auth.context';
+import { indexPosts } from '../../../services/firestore-posts.service';
+import { INDEX_POSTS_QUERY_KEY } from '../../../shared/constants/posts.const';
+import { IPostsFilters } from '../../../shared/interfaces/posts.interface';
+import { indexUsers } from '../../../services/firestore-users.service';
+import { PostsListing } from '../../../modules/posts/components/posts-listing';
+import { useIndexPost } from '../../../modules/posts/posts.query';
+import { useAuth } from '../../../modules/auth/auth.context';
 
 export default function PostsListingPage() {
   const { account } = useAuth();

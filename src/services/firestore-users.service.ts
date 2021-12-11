@@ -5,7 +5,6 @@ import { IUser } from '../shared/interfaces/users.interface';
 
 export const indexUsers = async (): Promise<IUser[]> => {
   const snapshots = await getDocs(collection(db, USERS_COLLECTION));
-  snapshots.forEach((doc) => console.log(doc.id));
   return snapshots.docs.map((doc) => doc.data() as IUser);
 };
 

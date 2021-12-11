@@ -1,4 +1,5 @@
-import { Alert, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, IconButton, Skeleton, Stack, Typography } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { LoadingWrapper } from '../../../components/loading-wrapper';
@@ -34,14 +35,14 @@ export function PostsListing({ posts, isLoading }: PostsListingProps) {
               <PostItem
                 key={post.id}
                 authorId={post.authorId}
-                postId={post.id}
+                id={post.id}
                 username={post.authorName}
                 title={post.title}
               />
             ))}
         </Stack>
       ) : (
-        <Alert severity='info'>Sorry...Nobody submit a post yet!</Alert>
+        <Alert severity='info'>Sorry...No article available yet!</Alert>
       )}
     </LoadingWrapper>
   );
@@ -49,14 +50,14 @@ export function PostsListing({ posts, isLoading }: PostsListingProps) {
 
 type PostItemProps = {
   authorId: string;
-  postId: string;
+  id: string;
   username: string;
   title: string;
 };
 
-const PostItem = ({ authorId, postId, username, title }: PostItemProps) => {
+const PostItem = ({ authorId, id, username, title }: PostItemProps) => {
   return (
-    <NextLink href={`/blog/post?authorId=${authorId}&postId=${postId}`}>
+    <NextLink href={`/blog/post?authorId=${authorId}&postId=${id}`}>
       <Stack
         direction='column'
         spacing={2}
@@ -74,7 +75,23 @@ const PostItem = ({ authorId, postId, username, title }: PostItemProps) => {
           },
         }}
       >
-        <Typography variant='h5'>{title}</Typography>
+        <Stack direction='row' spacing={1} alignItems='center'>
+          <Typography
+            variant='h5'
+            sx={{
+              margin: 0,
+            }}
+          >
+            {title}
+          </Typography>
+          <NextLink
+            href={`/blog/post?authorId=${authorId}&postId=${id}&edit=true`}
+          >
+            <IconButton size='small'>
+              <EditIcon color='primary' />
+            </IconButton>
+          </NextLink>
+        </Stack>
         <Typography
           variant='caption'
           sx={{

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const allowedParams = ['authorId', 'postId'];
+const allowedParams = ['authorId', 'postId', 'edit'];
 
 export const middleware = (req: NextRequest) => {
   const url = req.nextUrl;

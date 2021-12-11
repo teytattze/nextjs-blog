@@ -12,7 +12,7 @@ export function PostArticle({ post }: PostArticleProps) {
     <>
       {post ? (
         <BlogLayout post={post}>
-          <MDXRemote {...post.content!} />
+          <MDXRemote {...post.mdxContent!} />
         </BlogLayout>
       ) : (
         <Alert severity='warning'>Error...there is no available post!</Alert>
