@@ -23,8 +23,14 @@ import {
 import { createPostContent, deletePostContent } from './storage-posts.service';
 
 export const indexPosts = async (filters?: IPostsFilters): Promise<IPost[]> => {
-  const snapshots = await getDocs(indexPostsQuery(filters));
-  return snapshots.docs.map((doc) => doc.data() as IPost);
+  try {
+    const snapshots = await getDocs(indexPostsQuery(filters));
+    console.log(snapshots);
+    return snapshots.docs.map((doc) => doc.data() as IPost);
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 };
 
 export const getPost = async (
