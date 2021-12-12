@@ -13,7 +13,6 @@ import { LoadingButton } from '@mui/lab';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import * as React from 'react';
 import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import { LoadingWrapper } from '../../../components/loading-wrapper';
@@ -22,45 +21,40 @@ import { GoogleButton } from '../../../components/google-button';
 import { ILoginData } from '../../../shared/interfaces/auth.interface';
 import { defaultLoginValue, loginValidation } from '../auth.lib';
 import { handleLoginError } from '../auth.error';
-import { useLoginWithCredentials, useLoginWithGoogle } from '../auth.query';
+import {
+  loginWithCredentials,
+  loginWithGoogle,
+} from '../../../services/firestore-auth.service';
 
 export function LoginForm() {
-  const [errorMessage, setErrorMessage] = React.useState<string>('');
+  const [errMessage, setErrMessage] = React.useState<string>('');
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const { enqueueSnackbar } = useSnackbar();
-  const { push } = useRouter();
-
-  const { mutate: loginWithCredentials, isLoading } = useLoginWithCredentials();
-  const { mutate: loginWithGoogle } = useLoginWithGoogle({
-    onSuccess: () => {
-      enqueueSnackbar('Login successfully!', {
-        variant: 'success',
-      });
-      push('/');
-    },
-  });
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
   } = useForm<ILoginData>();
 
   const handleLogin = async (data: ILoginData) => {
-    await loginWithCredentials(data, {
-      onSuccess: () => {
-        enqueueSnackbar('You have logged in successfully', {
-          variant: 'success',
-        });
-        reset(defaultLoginValue);
-        push('/');
-      },
-      onError: (error) => {
-        const message = handleLoginError(error);
-        setErrorMessage(message);
-      },
-    });
+    setIsLoading(true);
+    try {
+      await loginWithCredentials(data);
+      enqueueSnackbar('Login successfully', {
+        variant: 'success',
+      });
+    } catch (error) {
+      const message = handleLoginError(error);
+      setErrMessage(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoginWithGoogle = async () => {
+    await loginWithGoogle();
   };
 
   return (
@@ -77,9 +71,9 @@ export function LoginForm() {
         <form onSubmit={handleSubmit((data: ILoginData) => handleLogin(data))}>
           <Box sx={{ my: 5 }}>
             <Stack direction='column' spacing={2.5}>
-              {Boolean(errorMessage) && (
-                <ClickAwayListener onClickAway={() => setErrorMessage('')}>
-                  <Alert severity='error'>{errorMessage}</Alert>
+              {Boolean(errMessage) && (
+                <ClickAwayListener onClickAway={() => setErrMessage('')}>
+                  <Alert severity='error'>{errMessage}</Alert>
                 </ClickAwayListener>
               )}
               <Controller
@@ -147,7 +141,7 @@ export function LoginForm() {
             title='Sign In with Google'
             fullWidth
             disableElevation
-            onClick={() => loginWithGoogle()}
+            onClick={handleLoginWithGoogle}
           />
         </form>
         <Divider

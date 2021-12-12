@@ -6,6 +6,7 @@ import {
   Switch,
   TextField,
 } from '@mui/material';
+import * as React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { LoadingWrapper } from '../../../components/loading-wrapper';
 import { PageLayout } from '../../../layouts/page-layout';
@@ -13,32 +14,47 @@ import { useAuth } from '../../../modules/auth/auth.context';
 import { createPostValidation, defaultCreatePostValue } from '../posts.lib';
 import { createPost } from '../../../services/firestore-posts.service';
 import { ICreatePostData } from '../../../shared/interfaces/posts.interface';
+import { useSnackbar } from 'notistack';
+import { useRouter } from 'next/router';
 
 export function NewPost() {
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const { account } = useAuth();
+  const { enqueueSnackbar } = useSnackbar();
+  const { push } = useRouter();
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
   } = useForm<ICreatePostData>();
+
+  const handleCreatePost = async (data: ICreatePostData) => {
+    if (!account) return;
+    setIsLoading(true);
+
+    try {
+      const id = await createPost({
+        ...data,
+        authorId: account.id,
+        authorName: account.displayName,
+      });
+      await push(`/blog/post?authorId=${account.id}&postId=${id}`);
+      enqueueSnackbar('New post created successfully', {
+        variant: 'success',
+      });
+    } catch (error) {
+      enqueueSnackbar('Cannot create new post', {
+        variant: 'error',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <PageLayout title='New Post'>
-      <LoadingWrapper loading={false}>
-        <form
-          onSubmit={handleSubmit(async (data) => {
-            if (!account) {
-              return;
-            }
-            await createPost({
-              ...data,
-              authorId: account.id,
-              authorName: account.displayName,
-            });
-            reset(defaultCreatePostValue);
-          })}
-        >
+      <LoadingWrapper loading={isLoading}>
+        <form onSubmit={handleSubmit(handleCreatePost)}>
           <Stack spacing={2.5} sx={{ mt: 6 }}>
             <Controller
               name='title'

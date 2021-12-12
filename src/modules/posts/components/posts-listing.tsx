@@ -1,30 +1,18 @@
-import { Alert, IconButton, Skeleton, Stack, Typography } from '@mui/material';
+import { Alert, IconButton, Stack, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import { LoadingWrapper } from '../../../components/loading-wrapper';
 import { IPost } from '../../../shared/interfaces/posts.interface';
+import { useAuth } from '../../auth/auth.context';
 
 type PostsListingProps = {
   posts?: IPost[];
-  isLoading: boolean;
-  isError: boolean;
 };
 
-export function PostsListing({ posts, isLoading }: PostsListingProps) {
+export function PostsListing({ posts }: PostsListingProps) {
   const { query } = useRouter();
   return (
-    <LoadingWrapper
-      loading={isLoading}
-      type='skeleton'
-      renderSkeleton={() => (
-        <Stack direction='column' spacing={2}>
-          <Skeleton variant='rectangular' height={24} />
-          <Skeleton variant='rectangular' height={24} />
-          <Skeleton variant='rectangular' height={188} />
-        </Stack>
-      )}
-    >
+    <>
       {posts?.length ? (
         <Stack direction='column' spacing={4}>
           {posts
@@ -44,7 +32,7 @@ export function PostsListing({ posts, isLoading }: PostsListingProps) {
       ) : (
         <Alert severity='info'>Sorry...No article available yet!</Alert>
       )}
-    </LoadingWrapper>
+    </>
   );
 }
 
@@ -56,6 +44,8 @@ type PostItemProps = {
 };
 
 const PostItem = ({ authorId, id, username, title }: PostItemProps) => {
+  const { account } = useAuth();
+
   return (
     <NextLink href={`/blog/post?authorId=${authorId}&postId=${id}`}>
       <Stack
@@ -84,13 +74,15 @@ const PostItem = ({ authorId, id, username, title }: PostItemProps) => {
           >
             {title}
           </Typography>
-          <NextLink
-            href={`/blog/post?authorId=${authorId}&postId=${id}&edit=true`}
-          >
-            <IconButton size='small'>
-              <EditIcon color='primary' />
-            </IconButton>
-          </NextLink>
+          {account && (
+            <NextLink
+              href={`/blog/post?authorId=${authorId}&postId=${id}&edit=true`}
+            >
+              <IconButton size='small'>
+                <EditIcon color='primary' />
+              </IconButton>
+            </NextLink>
+          )}
         </Stack>
         <Typography
           variant='caption'

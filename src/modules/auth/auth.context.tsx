@@ -3,6 +3,7 @@ import { onAuthStateChanged, User } from '@firebase/auth';
 import { auth } from '../../lib/firebase';
 import { IAccount } from '../../shared/interfaces/auth.interface';
 import { formatFirebaseUser } from './auth.helper';
+import { useRouter } from 'next/router';
 
 type AuthContextValue = {
   account: IAccount | null;
@@ -24,10 +25,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 export const useProvideAuth = () => {
   const [account, setAccount] = React.useState<IAccount | null>(null);
 
+  const { push } = useRouter();
+
   const handleFirebaseUser = (firebaseUser: User | null) => {
     if (firebaseUser) {
       const formattedAccount = formatFirebaseUser(firebaseUser);
       setAccount(formattedAccount);
+      push('/');
       return;
     }
     setAccount(null);

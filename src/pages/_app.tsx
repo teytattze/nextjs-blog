@@ -10,8 +10,6 @@ import { AppProps } from 'next/app';
 import { AuthProvider } from '../modules/auth/auth.context';
 import { DefaultLayout } from '../layouts/default-layout';
 import { SnackbarProvider } from '../components/snackbar-provider';
-import { Hydrate, QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
@@ -21,8 +19,6 @@ export default function MyApp({
   emotionCache = clientSideEmotionCache,
   pageProps,
 }: AppProps & { emotionCache: EmotionCache }) {
-  const [queryClient] = React.useState(() => new QueryClient());
-
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -31,18 +27,13 @@ export default function MyApp({
       </Head>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <QueryClientProvider client={queryClient}>
-          <Hydrate state={pageProps.dehydratedState}>
-            <SnackbarProvider>
-              <AuthProvider>
-                <DefaultLayout>
-                  <Component {...pageProps} />
-                </DefaultLayout>
-              </AuthProvider>
-            </SnackbarProvider>
-            <ReactQueryDevtools initialIsOpen={false} />
-          </Hydrate>
-        </QueryClientProvider>
+        <SnackbarProvider>
+          <AuthProvider>
+            <DefaultLayout>
+              <Component {...pageProps} />
+            </DefaultLayout>
+          </AuthProvider>
+        </SnackbarProvider>
       </ThemeProvider>
     </CacheProvider>
   );

@@ -12,7 +12,6 @@ import { LoadingButton } from '@mui/lab';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import * as React from 'react';
 import NextLink from 'next/link';
-import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 import { Controller, useForm } from 'react-hook-form';
 import { LoadingWrapper } from '../../../components/loading-wrapper';
@@ -20,50 +19,44 @@ import { PageTitle } from '../../../components/page-title';
 import { GoogleButton } from '../../../components/google-button';
 import { IRegisterData } from '../../../shared/interfaces/auth.interface';
 import { defaultRegistrationValue, registrationValidation } from '../auth.lib';
-import { useLoginWithGoogle, useRegisterWithCredentials } from '../auth.query';
 import { handleRegisterError } from '../auth.error';
+import {
+  loginWithGoogle,
+  registerWithCredentials,
+} from '../../../services/firestore-auth.service';
 
 export function RegisterForm() {
-  const [error, setError] = React.useState<string>('');
+  const [errMessage, setErrMessage] = React.useState<string>('');
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const { enqueueSnackbar } = useSnackbar();
-  const { push } = useRouter();
-
-  const { mutate: registerWithCredentials, isLoading } =
-    useRegisterWithCredentials();
-  const { mutate: loginWithGoogle } = useLoginWithGoogle({
-    onSuccess: () => {
-      enqueueSnackbar('Sign up successfully!', {
-        variant: 'success',
-      });
-      push('/');
-    },
-  });
 
   const {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
   } = useForm<IRegisterData>();
 
   const handleRegister = async (data: IRegisterData) => {
-    await registerWithCredentials(data, {
-      onSuccess: () => {
-        enqueueSnackbar(
-          'An verification email link has been sent to your email address',
-          {
-            variant: 'success',
-          },
-        );
-        reset(defaultRegistrationValue);
-        push('/');
-      },
-      onError: (error) => {
-        const message = handleRegisterError(error);
-        setError(message);
-      },
-    });
+    setIsLoading(true);
+    try {
+      await registerWithCredentials(data);
+      enqueueSnackbar(
+        'An verification email link has been sent to your email address',
+        {
+          variant: 'success',
+        },
+      );
+    } catch (error) {
+      const message = handleRegisterError(error);
+      setErrMessage(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLoginWithGoogle = async () => {
+    await loginWithGoogle();
   };
 
   return (
@@ -75,9 +68,9 @@ export function RegisterForm() {
         >
           <Box sx={{ my: 5 }}>
             <Stack direction='column' spacing={2.5}>
-              {Boolean(error) && (
-                <ClickAwayListener onClickAway={() => setError('')}>
-                  <Alert severity='error'>{error}</Alert>
+              {Boolean(errMessage) && (
+                <ClickAwayListener onClickAway={() => setErrMessage('')}>
+                  <Alert severity='error'>{errMessage}</Alert>
                 </ClickAwayListener>
               )}
               <Controller
@@ -157,7 +150,7 @@ export function RegisterForm() {
             title='Sign Up with Google'
             fullWidth
             disableElevation
-            onClick={() => loginWithGoogle()}
+            onClick={handleLoginWithGoogle}
           />
         </form>
         <Divider

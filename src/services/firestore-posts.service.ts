@@ -8,7 +8,6 @@ import {
 } from '@firebase/firestore';
 import { db } from '../lib/firebase';
 import { createId, getCurrentTimestamp } from '../lib/utils';
-import { USERS_COLLECTION } from '../shared/constants/users.const';
 import {
   ICreatePostData,
   IDeletePostData,
@@ -21,16 +20,11 @@ import {
   POSTS_COLLECTION,
 } from '../lib/firestore/posts.query';
 import { createPostContent, deletePostContent } from './storage-posts.service';
+import { USERS_COLLECTION } from '../lib/firestore/users.query';
 
 export const indexPosts = async (filters?: IPostsFilters): Promise<IPost[]> => {
-  try {
-    const snapshots = await getDocs(indexPostsQuery(filters));
-    console.log(snapshots);
-    return snapshots.docs.map((doc) => doc.data() as IPost);
-  } catch (error) {
-    console.log(error);
-    return [];
-  }
+  const snapshots = await getDocs(indexPostsQuery(filters));
+  return snapshots.docs.map((doc) => doc.data() as IPost);
 };
 
 export const getPost = async (
@@ -43,7 +37,7 @@ export const getPost = async (
   return snapshot.data() as IPost;
 };
 
-export const createPost = async (data: ICreatePostData) => {
+export const createPost = async (data: ICreatePostData): Promise<string> => {
   const postId = createId();
   const { title, content, published, authorId, authorName } = data;
   const storageUrl = await createPostContent({
@@ -66,6 +60,8 @@ export const createPost = async (data: ICreatePostData) => {
     doc(db, USERS_COLLECTION, authorId, POSTS_COLLECTION, postId),
     updatedData,
   );
+
+  return postId;
 };
 
 export const updatePost = async (data: IUpdatePostData) => {

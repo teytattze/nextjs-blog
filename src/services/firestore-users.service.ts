@@ -1,7 +1,7 @@
 import { doc, getDoc, getDocs, setDoc, collection } from '@firebase/firestore';
 import { db } from '../lib/firebase';
-import { USERS_COLLECTION } from '../shared/constants/users.const';
 import { IUser } from '../shared/interfaces/users.interface';
+import { USERS_COLLECTION } from '../lib/firestore/users.query';
 
 export const indexUsers = async (): Promise<IUser[]> => {
   const snapshots = await getDocs(collection(db, USERS_COLLECTION));

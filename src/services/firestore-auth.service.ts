@@ -5,19 +5,39 @@ import {
   signInWithEmailAndPassword,
   signInWithRedirect,
   signOut,
+  updateProfile,
   User,
   UserCredential,
 } from '@firebase/auth';
 import { ILoginData, IRegisterData } from '../shared/interfaces/auth.interface';
 import { auth } from '../lib/firebase';
+import { createUser } from './firestore-users.service';
+import { getCurrentTimestamp } from '../lib/utils';
 
 const googleProvider = new GoogleAuthProvider();
 
 export const registerWithCredentials = async (
   data: IRegisterData,
 ): Promise<UserCredential> => {
-  const { email, password } = data;
-  return await createUserWithEmailAndPassword(auth, email, password);
+  const { firstName, lastName, email, password } = data;
+  const userCredential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password,
+  );
+  await updateProfile(userCredential.user, {
+    displayName: `${data.firstName} ${data.lastName}`,
+  });
+  await createUser({
+    id: userCredential.user.uid,
+    firstName,
+    lastName,
+    email,
+    emailVerified: userCredential.user.emailVerified,
+    createdAt: getCurrentTimestamp(),
+  });
+  await sendEmailVerificationLink(userCredential.user);
+  return userCredential;
 };
 
 export const loginWithCredentials = async (

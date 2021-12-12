@@ -20,7 +20,8 @@ import { useRouter } from 'next/router';
 import { UrlObject } from 'url';
 import { useAuth } from '../modules/auth/auth.context';
 import { useSnackbar } from 'notistack';
-import { useLogout } from '../modules/auth/auth.query';
+import { logout } from '../services/firestore-auth.service';
+
 export function Navbar() {
   const theme = useTheme();
   const isDefault = useMediaQuery(theme.breakpoints.up('md'));
@@ -88,12 +89,14 @@ type DefaultLinksProps = {
 
 export function DefaultLinks({ isDefault }: DefaultLinksProps) {
   const { account } = useAuth();
+  const { push } = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const { mutate: logout } = useLogout({
-    onSuccess: () => {
-      enqueueSnackbar('Logout successfully!', { variant: 'success' });
-    },
-  });
+
+  const handleLogout = async () => {
+    await logout();
+    await push('/');
+    enqueueSnackbar('Logout successfully!', { variant: 'success' });
+  };
 
   return (
     <>
@@ -120,7 +123,7 @@ export function DefaultLinks({ isDefault }: DefaultLinksProps) {
             </>
           )}
           <Button
-            onClick={() => logout()}
+            onClick={handleLogout}
             variant='outlined'
             size={isDefault ? 'medium' : 'small'}
           >
