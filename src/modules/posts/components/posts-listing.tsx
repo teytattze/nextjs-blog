@@ -43,11 +43,11 @@ type PostItemProps = {
   title: string;
 };
 
-const PostItem = ({ authorId, id, username, title }: PostItemProps) => {
+const PostItem = ({ id, username, title, authorId }: PostItemProps) => {
   const { account } = useAuth();
 
   return (
-    <NextLink href={`/blog/post?authorId=${authorId}&postId=${id}`}>
+    <NextLink href={`/blog/${id}`} shallow>
       <Stack
         direction='column'
         spacing={2}
@@ -74,10 +74,8 @@ const PostItem = ({ authorId, id, username, title }: PostItemProps) => {
           >
             {title}
           </Typography>
-          {account && (
-            <NextLink
-              href={`/blog/post?authorId=${authorId}&postId=${id}&edit=true`}
-            >
+          {account?.id === authorId && (
+            <NextLink href={`/blog/${id}?edit=true`}>
               <IconButton size='small'>
                 <EditIcon color='primary' />
               </IconButton>

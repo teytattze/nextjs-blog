@@ -24,12 +24,16 @@ import {
   loginWithGoogle,
   registerWithCredentials,
 } from '../../../services/firestore-auth.service';
+import { useRouter } from 'next/router';
+import { useAuth } from '../auth.context';
 
 export function RegisterForm() {
   const [errMessage, setErrMessage] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const { account } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
+  const { push } = useRouter();
 
   const {
     handleSubmit,
@@ -58,6 +62,11 @@ export function RegisterForm() {
   const handleLoginWithGoogle = async () => {
     await loginWithGoogle();
   };
+
+  React.useEffect(() => {
+    if (!account) return;
+    push('/');
+  }, [account]);
 
   return (
     <Paper sx={{ p: 5, mx: 'auto', width: '100%', maxWidth: '500px' }}>

@@ -25,12 +25,16 @@ import {
   loginWithCredentials,
   loginWithGoogle,
 } from '../../../services/firestore-auth.service';
+import { useAuth } from '../auth.context';
+import { useRouter } from 'next/router';
 
 export function LoginForm() {
   const [errMessage, setErrMessage] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
+  const { account } = useAuth();
   const { enqueueSnackbar } = useSnackbar();
+  const { push } = useRouter();
 
   const {
     handleSubmit,
@@ -56,6 +60,11 @@ export function LoginForm() {
   const handleLoginWithGoogle = async () => {
     await loginWithGoogle();
   };
+
+  React.useEffect(() => {
+    if (!account) return;
+    push('/');
+  }, [account]);
 
   return (
     <Paper

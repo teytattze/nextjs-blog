@@ -38,7 +38,7 @@ export function NewPost() {
         authorId: account.id,
         authorName: account.displayName,
       });
-      await push(`/blog/post?authorId=${account.id}&postId=${id}`);
+      await push(`/blog/${id}`);
       enqueueSnackbar('New post created successfully', {
         variant: 'success',
       });

@@ -8,3 +8,7 @@ export const createId = () => {
 export const getCurrentTimestamp = () => {
   return moment().toISOString();
 };
+
+export const formatTimestamp = (timestamp: string) => {
+  return moment(timestamp).format('DD/MM/YYYY');
+};

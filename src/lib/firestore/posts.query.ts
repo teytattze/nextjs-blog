@@ -11,11 +11,14 @@ export const indexPostsQuery = (filters?: IPostsFilters) => {
   }
 
   const cons = [];
-  if (filters?.published !== undefined) {
-    cons.push(where('published', '==', filters?.published));
+  if (filters?.id !== undefined) {
+    cons.push(where('id', '==', filters?.id));
   }
   if (filters?.authorId !== undefined) {
     cons.push(where('authorId', '==', filters?.authorId));
+  }
+  if (filters?.published !== undefined) {
+    cons.push(where('published', '==', filters?.published));
   }
   return query(collectionRef, ...cons);
 };

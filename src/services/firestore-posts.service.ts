@@ -1,7 +1,6 @@
 import {
   doc,
   deleteDoc,
-  getDoc,
   getDocs,
   updateDoc,
   setDoc,
@@ -27,14 +26,9 @@ export const indexPosts = async (filters?: IPostsFilters): Promise<IPost[]> => {
   return snapshots.docs.map((doc) => doc.data() as IPost);
 };
 
-export const getPost = async (
-  userId: string,
-  postId: string,
-): Promise<IPost> => {
-  const snapshot = await getDoc(
-    doc(db, USERS_COLLECTION, userId, POSTS_COLLECTION, postId),
-  );
-  return snapshot.data() as IPost;
+export const getPost = async (id: string): Promise<IPost> => {
+  const snapshots = await getDocs(indexPostsQuery({ id }));
+  return snapshots.docs.map((doc) => doc.data() as IPost)[0];
 };
 
 export const createPost = async (data: ICreatePostData): Promise<string> => {

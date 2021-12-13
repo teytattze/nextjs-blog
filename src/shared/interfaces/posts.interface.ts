@@ -34,6 +34,7 @@ export interface IDeletePostData {
 }
 
 export interface IPostsFilters {
-  published?: boolean;
+  id?: string;
   authorId?: string;
+  published?: boolean;
 }

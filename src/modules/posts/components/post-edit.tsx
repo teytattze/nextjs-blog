@@ -48,7 +48,7 @@ export default function PostEdit({ post }: PostEditProps) {
         authorId: post.authorId,
         authorName: post.authorName,
       });
-      await push(`/blog/post?authorId=${post.authorId}&postId=${post.id}`);
+      await push(`/blog/${post.id}`);
       enqueueSnackbar('Update post successfully', {
         variant: 'success',
       });
