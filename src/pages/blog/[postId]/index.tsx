@@ -40,7 +40,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const params = posts.map((post) => ({ params: { postId: post.id } }));
   return {
     paths: params,
-    fallback: true,
+    fallback: 'blocking',
   };
 };
 
@@ -52,6 +52,6 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
   const updatePost = { ...post, content, mdxContent };
   return {
     props: { post: updatePost },
-    revalidate: 60,
+    revalidate: 1,
   };
 };
